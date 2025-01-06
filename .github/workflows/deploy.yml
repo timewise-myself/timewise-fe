@@ -1,0 +1,58 @@
+name: Deploy timewise-frontend to GCE
+
+on:
+  push:
+    branches: ["main"]
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3.6.1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3.3.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push to DockerHub
+        run: |
+          IMAGE_TAG=${{ github.sha }}
+          
+          echo ${{ secrets.ENV_PRODUCTION_FILE }} | base64 -d > .env
+          
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/timewise-frontend:latest -t ${{ secrets.DOCKER_USERNAME }}/timewise-frontend:${IMAGE_TAG} .
+          
+          docker push ${{ secrets.DOCKER_USERNAME }}/timewise-frontend:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/timewise-frontend:${IMAGE_TAG}
+
+  deploy:
+    name: Deploy to GCE
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.GCE_SSH_PRIVATE_KEY }}
+
+      - name: SSH into GCE and Deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.GCE_USER }}@${{ secrets.GCE_HOST }} << 'EOF'
+            docker pull ${{ secrets.DOCKER_USERNAME }}/timewise-frontend:latest
+            docker rm timewise-frontend --force || true
+            docker run \
+              --name timewise-frontend \
+              -dp 3000:3000 \
+              ${{ secrets.DOCKER_USERNAME }}/timewise-frontend:latest
+          EOF

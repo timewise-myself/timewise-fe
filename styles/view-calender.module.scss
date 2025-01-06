@@ -1,0 +1,64 @@
+.contentWrapper {
+  &.grid-to-schedule {
+    .schedule-container {
+      display: flex;
+      height: 500px;
+
+      .grid-content {
+        margin-left: 10px;
+      }
+
+      @media screen and (max-width: 768px) {
+        flex-direction: column;
+
+        .grid-content {
+          margin-top: 10px;
+        }
+
+        display: flex;
+        height: 100% !important;
+      }
+    }
+  }
+}
+
+.grid-schedule {
+  &.e-schedule {
+    &.e-device {
+      .e-timeline-view {
+        .e-resource-left-td {
+          width: 110px;
+        }
+      }
+    }
+
+    .e-timeline-view {
+      .e-date-header-wrap,
+      .e-content-wrap {
+        table {
+          col {
+            width: 100px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.drag-grid {
+  &.e-grid {
+    .e-cloneproperties {
+      &.e-draganddrop {
+        margin-top: 40px;
+
+        @media screen and (max-width: 768px) {
+          margin-top: 20px;
+        }
+      }
+    }
+
+    @media screen and (max-width: 768px) {
+      width: 100% !important;
+    }
+  }
+}

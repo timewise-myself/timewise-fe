@@ -1,0 +1,51 @@
+$max-width-container: 1200px;
+$lg: 1199px;
+$sm: 526px;
+$z-index: (
+  DEFAULT: 0,
+  DROPDOWN: 1000,
+  STICKY: 100,
+  FIXED: 1030,
+  MODAL_BACKDROP: 1040,
+  MODAL: 1050,
+  POPOVER: 1060,
+  TOOLTIP: 1070,
+);
+$primary-color: #2563eb;
+$header-text-color: #0f244d;
+$title-text-color: #334e80;
+$subtitle-text-color: #334e80;
+$body-text-color: #1f2e4d;
+$link-color: #346af7;
+$coming-soon-text-color: #ffa41c;
+$description-text-color: #54545c;
+$learn-more-text-color: #346af7;
+
+@mixin container-styled {
+  max-width: $max-width-container;
+  margin: auto;
+}
+@mixin image-fill($objectFit: cover) {
+  width: 100%;
+  height: 100%;
+  object-fit: $objectFit;
+}
+
+@mixin sizes($width: auto, $height: auto) {
+  width: $width;
+  height: $height;
+}
+
+@mixin position(
+  $position,
+  $top: auto,
+  $right: auto,
+  $bottom: auto,
+  $left: auto
+) {
+  position: $position;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+}
